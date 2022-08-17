@@ -1,8 +1,9 @@
-export const TodoListItem = ({ task, id, deleteTask }) => {
+export const TodoListItem = ({ task, id, editTask, deleteTask }) => {
   return (
     <li>
       <div>{task}</div>
-      <div onClick={() => deleteTask(id)}>X</div>
+      <button onClick={() => editTask(id, task)}>Редактировать</button>
+      <button onClick={() => deleteTask(id)}>Удалить</button>
     </li>
   );
 };
