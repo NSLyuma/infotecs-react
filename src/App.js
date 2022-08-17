@@ -1,10 +1,9 @@
-import { AddTodo, EditField } from "./components";
+import { TodoApp } from "./components";
 
 function App() {
   return (
     <div className="App">
-      <AddTodo />
-      <EditField />
+      <TodoApp />
     </div>
   );
 }
