@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { EditField, TodoList } from "../../components";
+import { TodoList, MyForm } from "../../components";
+import styles from "./TodoApp.module.css";
 
 export const TodoApp = () => {
-  //задачи подгружаются из localStorage, если их нет, соответственно пустой массив
+  //задачи подгружаются из localStorage, если их там нет, соответственно пустой массив
   const [todoList, setTodoList] = useState(
     JSON.parse(localStorage.getItem("todoList")) || []
   );
@@ -21,11 +22,15 @@ export const TodoApp = () => {
   const addNewTask = () => {
     //если поле ввода не пустое, задачи добавляются
     //id генерируется с помощью случайных чисел, методом toString(36) число переводится в 36-ричную систему счисления, методом substring(2, 9) обрезаются ненужные символы (0,) и сама строка
+    //лишние пробелы в начале и в конце строки обрезаются с помощью .trim()
     //после добавления новой задачи поле для ввода очищается
     if (userInput) {
       setTodoList([
         ...todoList,
-        { id: Math.random().toString(36).substring(2, 9), task: userInput },
+        {
+          id: Math.random().toString(36).substring(2, 9),
+          task: userInput.trim(),
+        },
       ]);
       setUserInput("");
     }
@@ -47,7 +52,7 @@ export const TodoApp = () => {
   const saveTask = (id) => {
     let newTask = [...todoList].map((item) => {
       if (item.id === id) {
-        item.task = taskValue;
+        item.task = taskValue.trim();
       }
       return item;
     });
@@ -55,32 +60,37 @@ export const TodoApp = () => {
     setTaskValue("");
   };
   return (
-    <div>
-      {/* форма для добавления новой задачи */}
-      <form onSubmit={(e) => e.preventDefault()}>
-        <input
+    <div className={styles.container}>
+      <div className={styles.taskList}>
+        {/* форма для добавления новой задачи */}
+        <MyForm
+          onSubmit={(e) => e.preventDefault()}
           placeholder="Введите название"
           value={userInput}
           onChange={(e) => setUserInput(e.target.value)}
+          onClick={addNewTask}
+          text="Добавить"
         />
-        <button onClick={addNewTask}>Добавить</button>
-      </form>
 
-      {/* список задач */}
-      <TodoList
-        todoList={todoList}
-        editTask={editTask}
-        deleteTask={deleteTask}
-      />
+        {/* список задач */}
+        <TodoList
+          todoList={todoList}
+          editTask={editTask}
+          deleteTask={deleteTask}
+        />
+      </div>
 
-      {/* поле редактирования задачи */}
-      <EditField
-        todoList={todoList}
-        taskValue={taskValue}
-        setTaskValue={setTaskValue}
-        saveTask={saveTask}
-        id={taskId}
-      />
+      <div className={styles.formBox}>
+        {/* форма для редактирования задачи */}
+        <form onSubmit={(e) => e.preventDefault()}>
+          <input
+            className={styles.input}
+            value={taskValue}
+            onChange={(e) => setTaskValue(e.target.value)}
+          />
+          <button onClick={() => saveTask(taskId)}>Сохранить</button>
+        </form>
+      </div>
     </div>
   );
 };
