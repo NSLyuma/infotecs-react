@@ -1,15 +1,38 @@
 .container {
+  /* display: flex;
+  justify-content: space-between; */
+  margin: auto;
+}
+
+.block {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+}
+
+.removeSelect {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .taskList {
-  border: 2px solid black;
+  border: 1px solid black;
   padding: 20px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.blockResize {
+  width: 40px;
+  background-color: black;
+  border: 1px solid black;
+  cursor: col-resize;
 }
 
 .formBox {
-  border: 2px solid black;
+  border: 1px solid black;
   padding: 20px;
 }
 

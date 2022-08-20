@@ -1,8 +1,9 @@
 import { TodoListItem } from "../../components";
+import styles from "./TodoList.module.css";
 
 export const TodoList = ({ todoList, editTask, deleteTask }) => {
   return (
-    <ol>
+    <ol className={styles.taskList}>
       {todoList.map(({ id, task }) => {
         return (
           <TodoListItem

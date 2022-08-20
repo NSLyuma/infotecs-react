@@ -1,4 +1,25 @@
-.task {
+.taskLi {
+  border: 1px solid black;
+}
+
+.taskBox {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.taskItem {
   text-overflow: ellipsis;
   overflow: hidden;
+  /* align-self: center; */
+}
+
+.taskButton {
+  background-color: transparent;
+  border: 1px solid black;
+  border-radius: 3px;
+  max-width: max-content;
+  padding: 5px 10px;
+  align-self: center;
 }
