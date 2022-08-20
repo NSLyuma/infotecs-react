@@ -1,10 +1,15 @@
-.container {
-  /* display: flex;
-  justify-content: space-between; */
-  margin: auto;
+.main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 20px auto;
+  width: 90%;
+  height: 90vh;
+  border: 1px solid black;
+  border-radius: 10px;
+  background-color: rgba(100, 149, 237, 0.2);
 }
 
-.block {
+.block1 {
   display: flex;
   justify-content: space-between;
 }
@@ -16,8 +21,7 @@
   -ms-user-select: none;
 }
 
-.taskList {
-  border: 1px solid black;
+.taskListBox {
   padding: 20px;
   display: flex;
   justify-content: center;
@@ -25,17 +29,42 @@
 }
 
 .blockResize {
-  width: 40px;
+  width: 20px;
   background-color: black;
   border: 1px solid black;
   cursor: col-resize;
 }
 
-.formBox {
-  border: 1px solid black;
-  padding: 20px;
+.editForm {
+  padding: 50px 20px;
+  height: 100%;
 }
 
-.input {
-  height: 100px;
+.editInput {
+  height: 200px;
+  padding: 20px;
+  border: 2px solid cornflowerblue;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  outline-color: #2a5ebd;
+  background-color: rgba(100, 149, 237, 0.3);
+}
+
+.editButton {
+  background: transparent;
+  border: 2px solid cornflowerblue;
+  border-radius: 5px;
+  padding: 10px;
+  text-transform: uppercase;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.editButton:hover {
+  background: cornflowerblue;
+}
+
+.editButton:active {
+  background: #4174d3;
+  border-color: #4174d3;
 }

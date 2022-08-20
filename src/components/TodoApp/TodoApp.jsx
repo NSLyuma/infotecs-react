@@ -17,7 +17,7 @@ export const TodoApp = () => {
 
   //инициализация класса для блока
   //выбрала этот способ, чтобы динамически добавить и убрать стили в нужном элементе
-  const [blockClass, setBlockClass] = useState(styles.block);
+  const [blockClass, setBlockClass] = useState(styles.block1);
 
   //сохранение задач в localStorage
   localStorage.setItem("todoList", JSON.stringify(todoList));
@@ -47,6 +47,10 @@ export const TodoApp = () => {
 
   //функция редактирования задачи по значению id
   const editTask = (id, task) => {
+    //здесь же фокусирую поле для редактирования
+    const editArea = document.getElementById("editArea");
+    editArea.focus();
+
     setTaskId(id);
     setTaskValue(task);
   };
@@ -67,29 +71,45 @@ export const TodoApp = () => {
   //функция изменения ширины списка задач
   const resizeBlock = (event) => {
     const blockResize = document.getElementById("blockResize"); //элемент, который меняет ширину списка
-    const block = document.getElementById("block"); //элемент, у которого меняется ширина
-    const blockHeight = block.offsetHeight; //высота списка задач, которая присваивается blockResize
+    const block1 = document.getElementById("block1"); //элемент 1, у которого меняется ширина
+    const block2 = document.getElementById("block2"); //элемент 2, у которого меняется ширина
 
+    //расположение blockResize поверх всех элементов и присваивание ему высоты block1 + 1 (т. к. родительский элемент больше на 1px)
     blockResize.style.position = "absolute";
-    blockResize.style.zIndex = "1000";
-    blockResize.style.height = `${blockHeight}px`;
+    blockResize.style.zIndex = "100";
+    blockResize.style.height = block1.offsetHeight + 1 + "px";
 
     //убираю выделение мышью
     setBlockClass(blockClass + " " + styles.removeSelect);
 
-    //функция передвижения blockResize на заданные координаты
+    //функция передвижения blockResize на пользовательские координаты
     const moveAt = (pageX) => {
       blockResize.style.left = pageX - blockResize.offsetWidth / 2 + "px";
+      //добавление стилей для блоков вокруг blockResize, чтобы они не схлопывались за ним
+      block1.style.width = pageX - 42 - blockResize.offsetWidth / 2 + "px";
+      block2.style.width =
+        window.innerWidth - pageX - 42 - blockResize.offsetWidth / 2 + "px";
     };
 
     //необходимо для того, чтобы blockResize сразу оказался под мышью
     moveAt(event.pageX);
 
     //перемещение blockResize по пользовательским координатам при движении мыши
-    //изменеие ширины списка задач
+    //изменение ширины списка задач
     const onMouseMove = (event) => {
       moveAt(event.pageX);
-      block.style.width = `${event.clientX}px`;
+
+      block1.style.width =
+        event.pageX - 42 - blockResize.offsetWidth / 2 + "px";
+
+      block2.style.width =
+        window.innerWidth -
+        event.pageX -
+        42 -
+        blockResize.offsetWidth / 2 +
+        "px";
+
+      block2.style.marginLeft = "18px";
     };
 
     //обработчик события на движение мыши
@@ -101,13 +121,13 @@ export const TodoApp = () => {
     blockResize.onmouseup = () => {
       document.removeEventListener("mousemove", onMouseMove);
       blockResize.onmouseup = null;
-      setBlockClass(styles.block);
+      setBlockClass(styles.block1);
     };
   };
   return (
-    <div className={styles.container}>
-      <div id="block" className={blockClass}>
-        <div className={styles.taskList}>
+    <div className={styles.main}>
+      <div id="block1" className={blockClass}>
+        <div className={styles.taskListBox}>
           {/* форма для добавления новой задачи */}
           <MyForm
             onSubmit={(e) => e.preventDefault()}
@@ -125,6 +145,8 @@ export const TodoApp = () => {
             deleteTask={deleteTask}
           />
         </div>
+
+        {/* блок для реализации изменения ширины списка задач */}
         <div
           onMouseDown={resizeBlock}
           className={styles.blockResize}
@@ -132,15 +154,21 @@ export const TodoApp = () => {
         ></div>
       </div>
 
-      <div className={styles.formBox}>
+      <div id="block2">
         {/* форма для редактирования задачи */}
-        <form onSubmit={(e) => e.preventDefault()}>
-          <input
-            className={styles.input}
+        <form className={styles.editForm} onSubmit={(e) => e.preventDefault()}>
+          <textarea
+            id="editArea"
+            className={styles.editInput}
             value={taskValue}
             onChange={(e) => setTaskValue(e.target.value)}
           />
-          <button onClick={() => saveTask(taskId)}>Сохранить</button>
+          <button
+            className={styles.editButton}
+            onClick={() => saveTask(taskId)}
+          >
+            Сохранить
+          </button>
         </form>
       </div>
     </div>

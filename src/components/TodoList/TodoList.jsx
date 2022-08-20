@@ -3,6 +3,7 @@ import styles from "./TodoList.module.css";
 
 export const TodoList = ({ todoList, editTask, deleteTask }) => {
   return (
+    // <div style={{ "overflow-y": "visible" }}>
     <ol className={styles.taskList}>
       {todoList.map(({ id, task }) => {
         return (
@@ -16,5 +17,6 @@ export const TodoList = ({ todoList, editTask, deleteTask }) => {
         );
       })}
     </ol>
+    // </div>
   );
 };
