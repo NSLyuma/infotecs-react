@@ -15,6 +15,10 @@ export const TodoApp = () => {
   const [taskValue, setTaskValue] = useState("");
   const [taskId, setTaskId] = useState("");
 
+  //инициализация класса для блока
+  //выбрала этот способ, чтобы динамически добавить и убрать стили в нужном элементе
+  const [blockClass, setBlockClass] = useState(styles.block);
+
   //сохранение задач в localStorage
   localStorage.setItem("todoList", JSON.stringify(todoList));
 
@@ -59,25 +63,73 @@ export const TodoApp = () => {
     setTodoList(newTask);
     setTaskValue("");
   };
+
+  //функция изменения ширины списка задач
+  const resizeBlock = (event) => {
+    const blockResize = document.getElementById("blockResize"); //элемент, который меняет ширину списка
+    const block = document.getElementById("block"); //элемент, у которого меняется ширина
+    const blockHeight = block.offsetHeight; //высота списка задач, которая присваивается blockResize
+
+    blockResize.style.position = "absolute";
+    blockResize.style.zIndex = "1000";
+    blockResize.style.height = `${blockHeight}px`;
+
+    //убираю выделение мышью
+    setBlockClass(blockClass + " " + styles.removeSelect);
+
+    //функция передвижения blockResize на заданные координаты
+    const moveAt = (pageX) => {
+      blockResize.style.left = pageX - blockResize.offsetWidth / 2 + "px";
+    };
+
+    //необходимо для того, чтобы blockResize сразу оказался под мышью
+    moveAt(event.pageX);
+
+    //перемещение blockResize по пользовательским координатам при движении мыши
+    //изменеие ширины списка задач
+    const onMouseMove = (event) => {
+      moveAt(event.pageX);
+      block.style.width = `${event.clientX}px`;
+    };
+
+    //обработчик события на движение мыши
+    document.addEventListener("mousemove", onMouseMove);
+
+    //при отжатии мыши обработчик события на её движения сбрасывается
+    //затем blockResize.onmouseup очищается
+    //список задач снова с одним классом
+    blockResize.onmouseup = () => {
+      document.removeEventListener("mousemove", onMouseMove);
+      blockResize.onmouseup = null;
+      setBlockClass(styles.block);
+    };
+  };
   return (
     <div className={styles.container}>
-      <div className={styles.taskList}>
-        {/* форма для добавления новой задачи */}
-        <MyForm
-          onSubmit={(e) => e.preventDefault()}
-          placeholder="Введите название"
-          value={userInput}
-          onChange={(e) => setUserInput(e.target.value)}
-          onClick={addNewTask}
-          text="Добавить"
-        />
+      <div id="block" className={blockClass}>
+        <div className={styles.taskList}>
+          {/* форма для добавления новой задачи */}
+          <MyForm
+            onSubmit={(e) => e.preventDefault()}
+            placeholder="Введите название"
+            value={userInput}
+            onChange={(e) => setUserInput(e.target.value)}
+            onClick={addNewTask}
+            text="Добавить"
+          />
 
-        {/* список задач */}
-        <TodoList
-          todoList={todoList}
-          editTask={editTask}
-          deleteTask={deleteTask}
-        />
+          {/* список задач */}
+          <TodoList
+            todoList={todoList}
+            editTask={editTask}
+            deleteTask={deleteTask}
+          />
+        </div>
+        <div
+          onMouseDown={resizeBlock}
+          className={styles.blockResize}
+          id="blockResize"
+        ></div>
       </div>
 
       <div className={styles.formBox}>
