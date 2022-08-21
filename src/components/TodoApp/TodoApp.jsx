@@ -16,11 +16,13 @@ export const TodoApp = () => {
   const [taskValue, setTaskValue] = useState("");
   const [taskId, setTaskId] = useState("");
 
-  //инициализация класса для блока
-  //выбрала этот способ, чтобы динамически добавить и убрать стили в нужном элементе
-  const [blockClass, setBlockClass] = useState(styles.block1);
-
+  //инициализация вводимого значения в поиске
   const [searchValue, setSearchValue] = useState("");
+
+  //инициализация счётчика и подсказок
+  const [count, setCount] = useState(1);
+  const [taskStatus, setTaskStatus] = useState("Ожидает");
+  const [taskColor, setTaskColor] = useState("grey");
 
   //сохранение задач в localStorage
   localStorage.setItem("todoList", JSON.stringify(todoList));
@@ -37,6 +39,8 @@ export const TodoApp = () => {
         {
           id: Math.random().toString(36).substring(2, 9),
           task: userInput.trim(),
+          status: "Ожидает",
+          color: "grey",
         },
       ]);
       setUserInput("");
@@ -76,22 +80,23 @@ export const TodoApp = () => {
     const blockResize = document.getElementById("blockResize"); //элемент, который меняет ширину списка
     const block1 = document.getElementById("block1"); //элемент 1, у которого меняется ширина
     const block2 = document.getElementById("block2"); //элемент 2, у которого меняется ширина
+    const main = document.getElementById("main");
 
     //расположение blockResize поверх всех элементов и присваивание ему высоты block1 + 1 (т. к. родительский элемент больше на 1px)
     blockResize.style.position = "absolute";
     blockResize.style.zIndex = "100";
     blockResize.style.height = block1.offsetHeight + 1 + "px";
 
-    //убираю выделение мышью
-    setBlockClass(blockClass + " " + styles.removeSelect);
+    //расстояние от блока-родителя до края окна браузера
+    const space = main.getBoundingClientRect().x;
 
     //функция передвижения blockResize на пользовательские координаты
     const moveAt = (pageX) => {
       blockResize.style.left = pageX - blockResize.offsetWidth / 2 + "px";
       //добавление стилей для блоков вокруг blockResize, чтобы они не схлопывались за ним
-      block1.style.width = pageX - 42 - blockResize.offsetWidth / 2 + "px";
+      block1.style.width = pageX - space - blockResize.offsetWidth / 2 + "px";
       block2.style.width =
-        window.innerWidth - pageX - 42 - blockResize.offsetWidth / 2 + "px";
+        window.innerWidth - pageX - space - blockResize.offsetWidth / 2 + "px";
     };
 
     //необходимо для того, чтобы blockResize сразу оказался под мышью
@@ -103,12 +108,12 @@ export const TodoApp = () => {
       moveAt(event.pageX);
 
       block1.style.width =
-        event.pageX - 42 - blockResize.offsetWidth / 2 + "px";
+        event.pageX - space - blockResize.offsetWidth / 2 + "px";
 
       block2.style.width =
         window.innerWidth -
         event.pageX -
-        42 -
+        space -
         blockResize.offsetWidth / 2 +
         "px";
 
@@ -124,16 +129,40 @@ export const TodoApp = () => {
     blockResize.onmouseup = () => {
       document.removeEventListener("mousemove", onMouseMove);
       blockResize.onmouseup = null;
-      setBlockClass(styles.block1);
     };
+  };
+
+  //функция цветовой индикации состояния задач
+  const changeIndication = (status) => {
+    if (status === "Ожидает") {
+      setTaskStatus("В процессе");
+      setTaskColor("blue");
+    } else if (status === "В процессе") {
+      setTaskStatus("Выполнена");
+      setTaskColor("green");
+    } else {
+      setTaskStatus("Ожидает");
+      setTaskColor("grey");
+    }
+  };
+
+  const updateTaskStatus = (id) => {
+    let newStatusTask = [...todoList].map((item) => {
+      if (item.id === id) {
+        item.status = taskStatus;
+        item.color = taskColor;
+      }
+      return item;
+    });
+    setTodoList(newStatusTask);
   };
 
   const filteredTasks = todoList.filter((item) =>
     item.task.toLowerCase().includes(searchValue.toLowerCase())
   );
   return (
-    <div className={styles.main}>
-      <div id="block1" className={blockClass}>
+    <div id="main" className={styles.main}>
+      <div id="block1" className={styles.block1}>
         <div className={styles.taskListBox}>
           {/* форма для добавления новой задачи */}
           <AddForm
@@ -148,7 +177,6 @@ export const TodoApp = () => {
           <input
             placeholder="Поиск..."
             onChange={(e) => setSearchValue(e.target.value)}
-            // value={searchValue}
           />
 
           {/* список задач */}
@@ -156,6 +184,8 @@ export const TodoApp = () => {
             todoList={filteredTasks}
             editTask={editTask}
             deleteTask={deleteTask}
+            changeIndication={changeIndication}
+            updateTaskStatus={updateTaskStatus}
           />
         </div>
 

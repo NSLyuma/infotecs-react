@@ -1,13 +1,13 @@
 .taskLi {
   border: 1px solid black;
+  position: relative;
 }
 
 .taskBox {
   display: flex;
-  justify-content: space-around;
+  /* justify-content: space-around; */
   flex-wrap: wrap;
   text-align: center;
-  position: relative;
 }
 
 .taskItem {
@@ -15,13 +15,15 @@
   text-overflow: ellipsis;
   overflow: hidden;
   cursor: default;
+  color: grey;
+  text-align: start;
 }
 
 .tooltip {
   display: block;
   visibility: hidden;
-  background-color: #b7b7b7;
-  color: #767676;
+  background-color: #cfcfcf;
+  color: #575757;
   font-size: 10px;
   width: auto;
   text-align: center;
@@ -29,8 +31,8 @@
   padding: 5px;
   position: absolute;
   z-index: 101;
-  bottom: 10%;
-  right: 40%;
+  top: 0%;
+  right: 0%;
   opacity: 0;
   transition: opacity 0.3s;
 }

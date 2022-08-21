@@ -1,49 +1,40 @@
-import { useState } from "react";
 import styles from "./TodoListItem.module.css";
 
-export const TodoListItem = ({ task, id, editTask, deleteTask }) => {
-  //инициализация счётчика и подсказок
-  const [count, setCount] = useState(1);
-  // const [] = useState(["Ожидает", "В процессе", "Выполнена"])
-  // const [tooltipText, setTooltipText] = useState(JSON.parse(localStorage.getItem("status")) || "Ожидает");
-  const [tooltipText, setTooltipText] = useState("Ожидает");
-
-  // localStorage.setItem("status", JSON.stringify(todoList));
-
-  //функция цветовой индикации состояния задач
-  const changeIndication = () => {
-    const item = document.getElementById(id);
-
-    if (count === 1) {
-      item.style.color = "blue";
-      setTooltipText("В процессе");
-      setCount(2);
-    } else if (count === 2) {
-      item.style.color = "green";
-      setTooltipText("Выполнена");
-      setCount(3);
-    } else {
-      item.style.color = "black";
-      setTooltipText("Ожидает");
-      setCount(1);
-    }
-  };
+export const TodoListItem = ({
+  task,
+  id,
+  status,
+  color,
+  editTask,
+  deleteTask,
+  changeIndication,
+  updateTaskStatus,
+}) => {
   return (
     <li className={styles.taskLi}>
       <div className={styles.taskBox}>
-        <div id={id} className={styles.taskItem} onClick={changeIndication}>
-          {task}
-          <div className={styles.tooltip}>{tooltipText}</div>
-        </div>
-        <button
-          className={styles.taskButton}
-          onClick={() => editTask(id, task)}
+        <div
+          id={id}
+          style={{ color: `${color}` }}
+          className={styles.taskItem}
+          onMouseDown={() => changeIndication(status)}
+          onMouseUp={() => updateTaskStatus(id)}
         >
-          Редактировать
-        </button>
-        <button className={styles.taskButton} onClick={() => deleteTask(id)}>
-          Удалить
-        </button>
+          {task}
+          <div className={styles.tooltip}>{status}</div>
+        </div>
+
+        <div>
+          <button
+            className={styles.taskButton}
+            onClick={() => editTask(id, task)}
+          >
+            Редактировать
+          </button>
+          <button className={styles.taskButton} onClick={() => deleteTask(id)}>
+            Удалить
+          </button>
+        </div>
       </div>
     </li>
   );
