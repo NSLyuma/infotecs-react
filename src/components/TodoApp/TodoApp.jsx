@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { TodoList, MyForm } from "../../components";
+import { TodoList, AddForm } from "../../components";
+import { EditForm } from "../EditForm/EditForm";
 import styles from "./TodoApp.module.css";
 
 export const TodoApp = () => {
@@ -18,6 +19,8 @@ export const TodoApp = () => {
   //инициализация класса для блока
   //выбрала этот способ, чтобы динамически добавить и убрать стили в нужном элементе
   const [blockClass, setBlockClass] = useState(styles.block1);
+
+  const [searchValue, setSearchValue] = useState("");
 
   //сохранение задач в localStorage
   localStorage.setItem("todoList", JSON.stringify(todoList));
@@ -124,13 +127,16 @@ export const TodoApp = () => {
       setBlockClass(styles.block1);
     };
   };
+
+  const filteredTasks = todoList.filter((item) =>
+    item.task.toLowerCase().includes(searchValue.toLowerCase())
+  );
   return (
     <div className={styles.main}>
       <div id="block1" className={blockClass}>
         <div className={styles.taskListBox}>
           {/* форма для добавления новой задачи */}
-          <MyForm
-            onSubmit={(e) => e.preventDefault()}
+          <AddForm
             placeholder="Введите название"
             value={userInput}
             onChange={(e) => setUserInput(e.target.value)}
@@ -138,9 +144,16 @@ export const TodoApp = () => {
             text="Добавить"
           />
 
+          {/* поле для поиска задачи по названию */}
+          <input
+            placeholder="Поиск..."
+            onChange={(e) => setSearchValue(e.target.value)}
+            // value={searchValue}
+          />
+
           {/* список задач */}
           <TodoList
-            todoList={todoList}
+            todoList={filteredTasks}
             editTask={editTask}
             deleteTask={deleteTask}
           />
@@ -156,20 +169,13 @@ export const TodoApp = () => {
 
       <div id="block2">
         {/* форма для редактирования задачи */}
-        <form className={styles.editForm} onSubmit={(e) => e.preventDefault()}>
-          <textarea
-            id="editArea"
-            className={styles.editInput}
-            value={taskValue}
-            onChange={(e) => setTaskValue(e.target.value)}
-          />
-          <button
-            className={styles.editButton}
-            onClick={() => saveTask(taskId)}
-          >
-            Сохранить
-          </button>
-        </form>
+        <EditForm
+          id="editArea"
+          taskValue={taskValue}
+          setTaskValue={setTaskValue}
+          saveTask={saveTask}
+          taskId={taskId}
+        />
       </div>
     </div>
   );
