@@ -1,6 +1,6 @@
 .main {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 2fr;
   margin: 20px auto;
   width: 90%;
   height: 90vh;
@@ -33,38 +33,4 @@
   background-color: black;
   border: 1px solid black;
   cursor: col-resize;
-}
-
-.editForm {
-  padding: 50px 20px;
-  height: 100%;
-}
-
-.editInput {
-  height: 200px;
-  padding: 20px;
-  border: 2px solid cornflowerblue;
-  border-radius: 10px;
-  margin-bottom: 20px;
-  outline-color: #2a5ebd;
-  background-color: rgba(100, 149, 237, 0.3);
-}
-
-.editButton {
-  background: transparent;
-  border: 2px solid cornflowerblue;
-  border-radius: 5px;
-  padding: 10px;
-  text-transform: uppercase;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.editButton:hover {
-  background: cornflowerblue;
-}
-
-.editButton:active {
-  background: #4174d3;
-  border-color: #4174d3;
 }

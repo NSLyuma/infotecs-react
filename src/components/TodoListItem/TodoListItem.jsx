@@ -4,7 +4,11 @@ import styles from "./TodoListItem.module.css";
 export const TodoListItem = ({ task, id, editTask, deleteTask }) => {
   //инициализация счётчика и подсказок
   const [count, setCount] = useState(1);
+  // const [] = useState(["Ожидает", "В процессе", "Выполнена"])
+  // const [tooltipText, setTooltipText] = useState(JSON.parse(localStorage.getItem("status")) || "Ожидает");
   const [tooltipText, setTooltipText] = useState("Ожидает");
+
+  // localStorage.setItem("status", JSON.stringify(todoList));
 
   //функция цветовой индикации состояния задач
   const changeIndication = () => {
