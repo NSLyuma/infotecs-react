@@ -1,7 +1,5 @@
 import { useState } from "react";
-import { TodoList, AddForm } from "../../components";
-import { EditForm } from "../EditForm/EditForm";
-import styles from "./TodoApp.module.css";
+import { TodoAppPresenter } from "./TodoAppPresenter";
 
 export const TodoApp = () => {
   //задачи подгружаются из localStorage, если их там нет, соответственно пустой массив
@@ -19,8 +17,7 @@ export const TodoApp = () => {
   //инициализация вводимого значения в поиске
   const [searchValue, setSearchValue] = useState("");
 
-  //инициализация счётчика и подсказок
-  const [count, setCount] = useState(1);
+  //инициализация статуса и цвета подсказок
   const [taskStatus, setTaskStatus] = useState("Ожидает");
   const [taskColor, setTaskColor] = useState("grey");
 
@@ -54,10 +51,11 @@ export const TodoApp = () => {
 
   //функция редактирования задачи по значению id
   const editTask = (id, task) => {
-    //здесь же фокусирую поле для редактирования
+    //фокусировка поля для редактирования
     const editArea = document.getElementById("editArea");
     editArea.focus();
 
+    //в поле редактирования передается задача и ее id
     setTaskId(id);
     setTaskValue(task);
   };
@@ -80,12 +78,12 @@ export const TodoApp = () => {
     const blockResize = document.getElementById("blockResize"); //элемент, который меняет ширину списка
     const block1 = document.getElementById("block1"); //элемент 1, у которого меняется ширина
     const block2 = document.getElementById("block2"); //элемент 2, у которого меняется ширина
-    const main = document.getElementById("main");
+    const main = document.getElementById("main"); //родительский элемент
 
-    //расположение blockResize поверх всех элементов и присваивание ему высоты block1 + 1 (т. к. родительский элемент больше на 1px)
+    //расположение blockResize поверх всех элементов и присваивание ему высоты родительского элемента (-1 из-за рамки)
     blockResize.style.position = "absolute";
     blockResize.style.zIndex = "100";
-    blockResize.style.height = block1.offsetHeight + 1 + "px";
+    blockResize.style.height = main.offsetHeight - 1 + "px";
 
     //расстояние от блока-родителя до края окна браузера
     const space = main.getBoundingClientRect().x;
@@ -103,7 +101,7 @@ export const TodoApp = () => {
     moveAt(event.pageX);
 
     //перемещение blockResize по пользовательским координатам при движении мыши
-    //изменение ширины списка задач
+    //изменение ширины списка задач и блока редактирования
     const onMouseMove = (event) => {
       moveAt(event.pageX);
 
@@ -132,7 +130,7 @@ export const TodoApp = () => {
     };
   };
 
-  //функция цветовой индикации состояния задач
+  //функция изменения статуса и цвета задачи при событии onMouseDown
   const changeIndication = (status) => {
     if (status === "Ожидает") {
       setTaskStatus("В процессе");
@@ -146,6 +144,7 @@ export const TodoApp = () => {
     }
   };
 
+  //функция перезаписи статуса и цвета задачи при событии onMouseUp
   const updateTaskStatus = (id) => {
     let newStatusTask = [...todoList].map((item) => {
       if (item.id === id) {
@@ -157,56 +156,76 @@ export const TodoApp = () => {
     setTodoList(newStatusTask);
   };
 
+  //список фильтрованных задач при поиске
   const filteredTasks = todoList.filter((item) =>
     item.task.toLowerCase().includes(searchValue.toLowerCase())
   );
   return (
-    <div id="main" className={styles.main}>
-      <div id="block1" className={styles.block1}>
-        <div className={styles.taskListBox}>
-          {/* форма для добавления новой задачи */}
-          <AddForm
-            placeholder="Введите название"
-            value={userInput}
-            onChange={(e) => setUserInput(e.target.value)}
-            onClick={addNewTask}
-            text="Добавить"
-          />
+    <>
+      <TodoAppPresenter
+        userInput={userInput}
+        setUserInput={setUserInput}
+        addNewTask={addNewTask}
+        setSearchValue={setSearchValue}
+        todoList={filteredTasks}
+        editTask={editTask}
+        deleteTask={deleteTask}
+        changeIndication={changeIndication}
+        updateTaskStatus={updateTaskStatus}
+        resizeBlock={resizeBlock}
+        taskValue={taskValue}
+        setTaskValue={setTaskValue}
+        saveTask={saveTask}
+        taskId={taskId}
+      />
+    </>
+    // <div id="main" className={styles.main}>
+    //   <div id="block1" className={styles.block1}>
+    //     <div className={styles.taskListBox}>
+    //       {/* форма для добавления новой задачи */}
+    //       <AddForm
+    //         placeholder="Введите название"
+    //         value={userInput}
+    //         onChange={(e) => setUserInput(e.target.value)}
+    //         onClick={addNewTask}
+    //         text="Добавить"
+    //       />
 
-          {/* поле для поиска задачи по названию */}
-          <input
-            placeholder="Поиск..."
-            onChange={(e) => setSearchValue(e.target.value)}
-          />
+    //       {/* поле для поиска задачи по названию */}
+    //       <input
+    //         placeholder="Поиск..."
+    //         onChange={(e) => setSearchValue(e.target.value)}
+    //       />
 
-          {/* список задач */}
-          <TodoList
-            todoList={filteredTasks}
-            editTask={editTask}
-            deleteTask={deleteTask}
-            changeIndication={changeIndication}
-            updateTaskStatus={updateTaskStatus}
-          />
-        </div>
+    //       {/* список задач */}
+    //       <h3>Список задач</h3>
+    //       <TodoList
+    //         todoList={filteredTasks}
+    //         editTask={editTask}
+    //         deleteTask={deleteTask}
+    //         changeIndication={changeIndication}
+    //         updateTaskStatus={updateTaskStatus}
+    //       />
+    //     </div>
 
-        {/* блок для реализации изменения ширины списка задач */}
-        <div
-          onMouseDown={resizeBlock}
-          className={styles.blockResize}
-          id="blockResize"
-        ></div>
-      </div>
+    //     {/* блок для реализации изменения ширины списка задач */}
+    //     <div
+    //       onMouseDown={resizeBlock}
+    //       className={styles.blockResize}
+    //       id="blockResize"
+    //     ></div>
+    //   </div>
 
-      <div id="block2">
-        {/* форма для редактирования задачи */}
-        <EditForm
-          id="editArea"
-          taskValue={taskValue}
-          setTaskValue={setTaskValue}
-          saveTask={saveTask}
-          taskId={taskId}
-        />
-      </div>
-    </div>
+    //   <div id="block2">
+    //     {/* форма для редактирования задачи */}
+    //     <EditForm
+    //       id="editArea"
+    //       taskValue={taskValue}
+    //       setTaskValue={setTaskValue}
+    //       saveTask={saveTask}
+    //       taskId={taskId}
+    //     />
+    //   </div>
+    // </div>
   );
 };
