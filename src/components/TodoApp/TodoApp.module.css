@@ -20,8 +20,23 @@
 
 .taskListBox {
   padding: 20px;
-  display: flex;
-  flex-direction: column;
+}
+
+.search {
+  padding: 10px;
+  border: 2px solid cornflowerblue;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  background-color: rgba(100, 149, 237, 0.3);
+}
+
+.search:focus {
+  border: 2px solid #2a5ebd;
+}
+
+.taskList {
+  height: 58vh;
+  overflow-y: auto;
 }
 
 .blockResize {

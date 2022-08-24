@@ -23,7 +23,7 @@ export const TodoAppPresenter = ({
         <div className={styles.taskListBox}>
           {/* форма для добавления новой задачи */}
           <AddForm
-            placeholder="Введите название"
+            placeholder="Название задачи"
             value={userInput}
             onChange={(e) => setUserInput(e.target.value)}
             onClick={addNewTask}
@@ -32,19 +32,22 @@ export const TodoAppPresenter = ({
 
           {/* поле для поиска задачи по названию */}
           <input
+            className={styles.search}
             placeholder="Поиск..."
             onChange={(e) => setSearchValue(e.target.value)}
           />
 
           {/* список задач */}
-          <h3>Список задач</h3>
-          <TodoList
-            todoList={todoList}
-            editTask={editTask}
-            deleteTask={deleteTask}
-            changeIndication={changeIndication}
-            updateTaskStatus={updateTaskStatus}
-          />
+          <h3 style={{ marginBottom: "5px" }}>Список задач</h3>
+          <div className={styles.taskList}>
+            <TodoList
+              todoList={todoList}
+              editTask={editTask}
+              deleteTask={deleteTask}
+              changeIndication={changeIndication}
+              updateTaskStatus={updateTaskStatus}
+            />
+          </div>
         </div>
 
         {/* блок для реализации изменения ширины списка задач */}

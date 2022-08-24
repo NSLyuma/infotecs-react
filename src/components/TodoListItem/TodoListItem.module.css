@@ -1,19 +1,30 @@
 .taskLi {
-  border: 1px solid black;
   position: relative;
+  margin-bottom: 10px;
+  border-top: 1px solid cornflowerblue;
 }
 
 .taskBox {
   display: flex;
-  /* justify-content: space-around; */
   flex-wrap: wrap;
-  text-align: center;
+}
+
+.taskTitle {
+  display: flex;
+  justify-content: start;
+  align-content: flex-start;
+  margin-bottom: 10px;
+}
+
+.taskTitle::before {
+  content: counter(item) ". ";
+  counter-increment: item;
+  margin-right: 5px;
 }
 
 .taskItem {
   display: inline;
   text-overflow: ellipsis;
-  overflow: hidden;
   cursor: default;
   color: grey;
   text-align: start;
@@ -42,11 +53,14 @@
   opacity: 1;
 }
 
+.taskButtonBox {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
 .taskButton {
-  background-color: transparent;
-  border: 1px solid black;
-  border-radius: 3px;
-  max-width: max-content;
-  padding: 5px 10px;
-  align-self: center;
+  font-size: 10px;
+  padding: 5px;
+  margin: 0 auto;
 }

@@ -3,7 +3,7 @@
   padding: 0;
   box-sizing: border-box;
   width: 100%;
-  overflow-y: hidden;
+  overflow: hidden;
 }
 
 body {
@@ -21,4 +21,24 @@ code {
 
 input {
   outline: none;
+}
+
+button {
+  background: transparent;
+  border: 2px solid cornflowerblue;
+  border-radius: 5px;
+  padding: 10px;
+  text-transform: uppercase;
+  font-weight: 600;
+  cursor: pointer;
+  width: max-content;
+}
+
+button:hover {
+  background: cornflowerblue;
+}
+
+button:active {
+  background: #4174d3;
+  border-color: #4174d3;
 }

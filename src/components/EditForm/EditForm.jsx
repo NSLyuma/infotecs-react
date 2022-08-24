@@ -9,9 +9,7 @@ export const EditForm = ({ id, taskValue, setTaskValue, saveTask, taskId }) => {
         value={taskValue}
         onChange={(e) => setTaskValue(e.target.value)}
       />
-      <button className={styles.editButton} onClick={() => saveTask(taskId)}>
-        Сохранить
-      </button>
+      <button onClick={() => saveTask(taskId)}>Сохранить</button>
     </form>
   );
 };

@@ -1,6 +1,6 @@
-/* .addForm {
+.addForm {
   margin-bottom: 20px;
-} */
+}
 
 .addFormInput {
   padding: 10px;
@@ -12,24 +12,4 @@
 
 .addFormInput:focus {
   border: 2px solid #2a5ebd;
-}
-
-.addFormButton {
-  background: transparent;
-  border: 2px solid cornflowerblue;
-  border-radius: 5px;
-  padding: 10px;
-  text-transform: uppercase;
-  font-weight: 600;
-  cursor: pointer;
-  margin-bottom: 30px;
-}
-
-.addFormButton:hover {
-  background: cornflowerblue;
-}
-
-.addFormButton:active {
-  background: #4174d3;
-  border-color: #4174d3;
 }
