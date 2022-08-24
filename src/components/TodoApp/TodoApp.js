@@ -7,7 +7,7 @@ export const TodoApp = () => {
     JSON.parse(localStorage.getItem("todoList")) || []
   );
 
-  //инициализация пользовательского ввода
+  //инициализация пользовательского ввода для добавления задачи
   const [userInput, setUserInput] = useState("");
 
   //инициализация переменных для возвращения задач и их id
@@ -29,6 +29,7 @@ export const TodoApp = () => {
     //если поле ввода не пустое, задачи добавляются
     //id генерируется с помощью случайных чисел, методом toString(36) число переводится в 36-ричную систему счисления, методом substring(2, 9) обрезаются ненужные символы (0,) и сама строка
     //лишние пробелы в начале и в конце строки обрезаются с помощью .trim()
+    //для всех новых задач значения переменных status и color равны taskStatus и taskColor соответственно, т. к. в дальнейшем они будут изменяться
     //после добавления новой задачи поле для ввода очищается
     if (userInput) {
       setTodoList([
@@ -36,8 +37,8 @@ export const TodoApp = () => {
         {
           id: Math.random().toString(36).substring(2, 9),
           task: userInput.trim(),
-          status: "Ожидает",
-          color: "grey",
+          status: taskStatus,
+          color: taskColor,
         },
       ]);
       setUserInput("");
@@ -85,16 +86,26 @@ export const TodoApp = () => {
     blockResize.style.zIndex = "100";
     blockResize.style.height = main.offsetHeight - 1 + "px";
 
-    //расстояние от блока-родителя до края окна браузера
-    const space = main.getBoundingClientRect().x;
+    const space = main.getBoundingClientRect().x; //расстояние от левого блока-родителя до левого края окна браузера
+    const spaceRight = space + main.offsetWidth - 20; //расстояние от правого блока-родителя до левого края окна браузера
 
     //функция передвижения blockResize на пользовательские координаты
     const moveAt = (pageX) => {
-      blockResize.style.left = pageX - blockResize.offsetWidth / 2 + "px";
-      //добавление стилей для блоков вокруг blockResize, чтобы они не схлопывались за ним
-      block1.style.width = pageX - space - blockResize.offsetWidth / 2 + "px";
-      block2.style.width =
-        window.innerWidth - pageX - space - blockResize.offsetWidth / 2 + "px";
+      //условие, необходимое, чтобы blockResize не перемещался за края родительского элемента
+      if (
+        pageX - blockResize.offsetWidth / 2 >= space &&
+        pageX - blockResize.offsetWidth / 2 <= spaceRight
+      ) {
+        blockResize.style.left = pageX - blockResize.offsetWidth / 2 + "px";
+        //изменение ширины блоков вокруг blockResize, чтобы они не схлопывались за ним
+        block1.style.width = pageX - space - blockResize.offsetWidth / 2 + "px";
+        block2.style.width =
+          window.innerWidth -
+          pageX -
+          space -
+          blockResize.offsetWidth / 2 +
+          "px";
+      }
     };
 
     //необходимо для того, чтобы blockResize сразу оказался под мышью
@@ -103,31 +114,39 @@ export const TodoApp = () => {
     //перемещение blockResize по пользовательским координатам при движении мыши
     //изменение ширины списка задач и блока редактирования
     const onMouseMove = (event) => {
-      moveAt(event.pageX);
+      if (
+        event.pageX - blockResize.offsetWidth / 2 >= space &&
+        event.pageX - blockResize.offsetWidth / 2 <= spaceRight
+      ) {
+        moveAt(event.pageX);
 
-      block1.style.width =
-        event.pageX - space - blockResize.offsetWidth / 2 + "px";
+        block1.style.width =
+          event.pageX - space - blockResize.offsetWidth / 2 + "px";
 
-      block2.style.width =
-        window.innerWidth -
-        event.pageX -
-        space -
-        blockResize.offsetWidth / 2 +
-        "px";
+        block2.style.width =
+          window.innerWidth -
+          event.pageX -
+          space -
+          blockResize.offsetWidth / 2 +
+          "px";
 
-      block2.style.marginLeft = "18px";
+        block2.style.marginLeft = "18px";
+      }
     };
 
     //обработчик события на движение мыши
     document.addEventListener("mousemove", onMouseMove);
 
-    //при отжатии мыши обработчик события на её движения сбрасывается
-    //затем blockResize.onmouseup очищается
-    //список задач снова с одним классом
-    blockResize.onmouseup = () => {
+    //функция на отпускание кнопки мыши
+    //сбрасывается текущий обработчик и обработчик события на движение мыши
+    //для того, чтобы если курсор уйдёт с blockResize, он перестал двигаться, когда мышь не нажата
+    const onMouseUp = () => {
+      document.removeEventListener("mouseup", onMouseUp);
       document.removeEventListener("mousemove", onMouseMove);
-      blockResize.onmouseup = null;
     };
+
+    //обработчик события на отпускание кнопки мыши
+    document.addEventListener("mouseup", onMouseUp);
   };
 
   //функция изменения статуса и цвета задачи при событии onMouseDown
@@ -145,6 +164,7 @@ export const TodoApp = () => {
   };
 
   //функция перезаписи статуса и цвета задачи при событии onMouseUp
+  //статус и цвет сбрасываются, чтобы у новых задач был первоначальный статус
   const updateTaskStatus = (id) => {
     let newStatusTask = [...todoList].map((item) => {
       if (item.id === id) {
@@ -154,6 +174,8 @@ export const TodoApp = () => {
       return item;
     });
     setTodoList(newStatusTask);
+    setTaskStatus("Ожидает");
+    setTaskColor("grey");
   };
 
   //список фильтрованных задач при поиске
